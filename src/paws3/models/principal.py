@@ -6,10 +6,13 @@ import pyomo.environ as pyo
 from ..core.config import PawsConfig
 from ..core.datatypes import ProblemData
 
+from dataclasses import dataclass
+
 @dataclass
 class PrincipalResult:
     model: pyo.ConcreteModel
     solver_status: str
+    solver_driver: str
     obj_value: float | None
 
 def build_principal_model(data: ProblemData, cfg: PawsConfig, t0: int, T: int) -> PrincipalResult:
@@ -25,9 +28,22 @@ def build_principal_model(data: ProblemData, cfg: PawsConfig, t0: int, T: int) -
         return sum(model.X[s, t] * data.yields.get((s, t), 0.0) for s in strata)
     m.vol = pyo.Expression(periods, rule=vol_t)
 
-    # Objective: placeholder even-flow (minimize squared deviation from average of first window)
-    avg = (1.0 / T) * sum(m.vol[t] for t in periods)
-    m.obj = pyo.Objective(expr=sum((m.vol[t] - avg) ** 2 for t in periods), sense=pyo.minimize)
+    # # Objective: placeholder even-flow (minimize squared deviation from average of first window)
+    # avg = (1.0 / T) * sum(m.vol[t] for t in periods)
+    # m.obj = pyo.Objective(expr=sum((m.vol[t] - avg) ** 2 for t in periods), sense=pyo.minimize)
+
+    # LP even-flow via L1 deviations: minimize sum |vol[t] - z|
+    m.z = pyo.Var(domain=pyo.Reals)  # target flow
+    m.dpos = pyo.Var(periods, domain=pyo.NonNegativeReals)
+    m.dneg = pyo.Var(periods, domain=pyo.NonNegativeReals)
+    # tie deviations: vol[t] - z = dpos - dneg
+    def dev_rule(model, t):
+        return m.vol[t] - m.z == m.dpos[t] - m.dneg[t]
+    m.dev = pyo.Constraint(periods, rule=dev_rule)
+    # optional: set z to the mean with a linear constraint if you want:
+    # m.mean_def = pyo.Constraint(expr = T * m.z == sum(m.vol[t] for t in periods))
+    # Objective: minimize total deviation from z (robust L1)
+    m.obj = pyo.Objective(expr=sum(m.dpos[t] + m.dneg[t] for t in periods), sense=pyo.minimize)
 
     # Example demand constraint (if provided)
     m.demand_lo = pyo.ConstraintList()
@@ -40,4 +56,9 @@ def build_principal_model(data: ProblemData, cfg: PawsConfig, t0: int, T: int) -
     # Solve (HiGHS via appsi if available, else exec)
     from .solvers import solve_model
     res = solve_model(m, cfg.solver)
-    return PrincipalResult(model=m, solver_status=res.get("status", "unknown"), obj_value=pyo.value(m.obj))
+    return PrincipalResult(
+        model=m,
+        solver_status=res.get("status", "unknown"),
+        solver_driver=res.get("driver", "unknown"),
+        obj_value=pyo.value(m.obj),
+    )
