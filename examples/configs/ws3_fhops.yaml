@@ -1,0 +1,23 @@
+
+data_path: examples/minimal/data
+horizon:
+  period_length: 7
+  horizon_periods: 12
+  replanning_step: 1
+  start_period: 0
+  end_period: 24
+principal_policy:
+  name: ws3_emulator
+  params:
+    mode: import  # or 'cli' with 'cli' and 'recipe' params
+agent_behavior:
+  name: fhops_exec
+  params:
+    mode: cli
+    cli: fhops        # resolves on PATH; else switch to 'import' and install fhops
+    profile: default
+solver:
+  driver: auto
+  time_limit: 60
+run:
+  out_dir: runs/ws3_fhops_demo

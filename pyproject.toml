@@ -1,0 +1,55 @@
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paws3"
+version = "0.0.1"
+description = "PAWS3 — Principal-Agent Wood Supply Simulation System (rolling-horizon, bilevel, Pyomo-based)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name="FRESH Lab (UBC)", email="fresh.lab@ubc.ca"}]
+keywords = ["forestry", "optimization", "bilevel", "pyomo", "rolling-horizon", "principal-agent"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent"
+]
+
+dependencies = [
+  "pyomo>=6.7",
+  "highspy>=1.6.0",
+  "appsi>=0.1.10",
+  "pydantic>=2.7",
+  "pandas>=2.2",
+  "numpy>=1.26",
+  "typer>=0.12",
+  "rich>=13.7",
+  "pyyaml>=6.0",
+  "networkx>=3.2",
+  "loguru>=0.7"
+]
+
+[project.urls]
+Homepage = "https://github.com/UBC-FRESH/paws3"
+
+[project.scripts]
+paws3 = "paws3.cli.commands:app"
+run-sim-cmd = "paws3.cli.commands:run_sim_cmd"
+solve-bilevel-cmd = "paws3.cli.commands:solve_bilevel_cmd"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["paws3*"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
