@@ -1,0 +1,29 @@
+
+# Bilevel stub config (hook enabled; placeholder decomposition loop)
+data_path: examples/minimal/data
+
+horizon:
+  period_length: 7
+  horizon_periods: 12
+  replanning_step: 1
+  start_period: 0
+  end_period: 24
+
+principal_policy:
+  name: even_flow
+  params: {}
+
+agent_behavior:
+  name: profit_max_flow_stub   # swap to fhops_exec when FHOPS is available
+  params: {}
+
+bilevel:
+  enabled: true
+  reformulation: decomposition
+
+solver:
+  driver: appsi
+  time_limit: 30
+
+run:
+  out_dir: runs/bilevel_stub

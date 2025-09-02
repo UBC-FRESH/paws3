@@ -1,0 +1,20 @@
+{
+  "data_path": "examples/minimal/data",
+  "bilevel": {
+    "enabled": false
+  },
+  "horizon": {
+    "period_length": 7,
+    "horizon_periods": 12,
+    "replanning_step": 1,
+    "start_period": 0,
+    "end_period": 24
+  },
+  "solver": {
+    "driver": "appsi",
+    "time_limit": 30
+  },
+  "run": {
+    "out_dir": "examples/minimal/runs"
+  }
+}
