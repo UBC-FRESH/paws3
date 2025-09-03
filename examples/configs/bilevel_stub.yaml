@@ -3,19 +3,25 @@
 data_path: examples/minimal/data
 
 horizon:
-  period_length: 7
-  horizon_periods: 12
+  period_length: 3650      # days ≈ 10 years per period
+  horizon_periods: 10      # long-term horizon
   replanning_step: 1
   start_period: 0
-  end_period: 24
+  end_period: 10
 
 principal_policy:
   name: even_flow
-  params: {}
+  params:
+    min_vol: 100     # m3 per period (pick any small positive for a demo)
 
 agent_behavior:
-  name: profit_max_flow_stub   # swap to fhops_exec when FHOPS is available
-  params: {}
+  name: profit_max_flow_stub
+  params:
+    consume_on_period: 1    # only accept/ship in period 1 (10-year mark)
+    
+# agent_behavior:
+#   name: profit_max_flow_stub   # swap to fhops_exec when FHOPS is available
+#   params: {}
 
 bilevel:
   enabled: true
