@@ -21,7 +21,7 @@ class SimState:
 class RollingHorizonSimulator:
     def __init__(self, cfg: PawsConfig):
         self.cfg = cfg
-        self.data = load_problem_data(cfg.data_path)
+        self.data = load_problem_data(cfg)
 
     def run(self) -> Dict[str, Any]:
         h = self.cfg.horizon

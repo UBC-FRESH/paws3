@@ -3,8 +3,8 @@
 data_path: examples/minimal/data
 
 horizon:
-  period_length: 3650      # days ≈ 10 years per period
-  horizon_periods: 10      # long-term horizon
+  period_length: 10y
+  horizon_periods: 10
   replanning_step: 1
   start_period: 0
   end_period: 10
@@ -12,7 +12,7 @@ horizon:
 principal_policy:
   name: even_flow
   params:
-    min_vol: 100     # m3 per period (pick any small positive for a demo)
+    min_vol: 20000     # m3 per period (pick any small positive for a demo)
 
 agent_behavior:
   name: profit_max_flow_stub
