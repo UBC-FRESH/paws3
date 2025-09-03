@@ -12,17 +12,13 @@ horizon:
 principal_policy:
   name: even_flow
   params:
-    min_vol: 20000     # m3 per period (pick any small positive for a demo)
+    min_vol: 5000     # m3 per period (pick any small positive for a demo)
 
 agent_behavior:
   name: profit_max_flow_stub
   params:
-    consume_on_period: 1    # only accept/ship in period 1 (10-year mark)
+    consume_on_period: 0    # only accept/ship in period 1 (10-year mark)
     
-# agent_behavior:
-#   name: profit_max_flow_stub   # swap to fhops_exec when FHOPS is available
-#   params: {}
-
 bilevel:
   enabled: true
   reformulation: decomposition
